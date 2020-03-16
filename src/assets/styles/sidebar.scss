@@ -1,0 +1,419 @@
+#app {
+  .main-container {
+    min-height: 100%;
+    transition: margin-left .28s;
+    margin-left: $sideBarWidth;
+    position: relative;
+  }
+
+  .sidebar-container {
+    transition: width 0.28s;
+    width: $sideBarWidth !important;
+    background-color: $menuBg;
+    height: 100%;
+    position: fixed;
+    font-size: 0px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1001;
+    overflow: hidden;
+
+    // reset element-ui css
+    .horizontal-collapse-transition {
+      transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
+    }
+
+    .scrollbar-wrapper {
+      overflow-x: hidden !important;
+    }
+
+    .el-scrollbar__bar.is-vertical {
+      right: 0px;
+    }
+
+    .el-scrollbar {
+      height: 100%;
+    }
+
+    &.has-logo {
+      .el-scrollbar {
+        height: calc(100% - 50px);
+      }
+    }
+
+    .is-horizontal {
+      display: none;
+    }
+
+    a {
+      display: inline-block;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .svg-icon {
+      margin-right: 16px;
+    }
+
+    .el-menu {
+      border: none;
+      height: 100%;
+      width: 100% !important;
+      .el-icon-arrow-down{
+        color: $menuText;
+        font-weight: 600;
+      }
+    }
+
+    // menu hover
+    .submenu-title-noDropdown,
+    .el-submenu__title {
+      height: 50px;
+      line-height: 50px;
+      &:hover {
+        background-color: $menuHover !important;
+      }
+    }
+
+    .is-active>.el-submenu__title {
+      color: $subMenuActiveText !important;
+      .svg-icon{
+        color: $subMenuActiveText !important;
+      }
+    }
+
+
+    & .nest-menu .el-submenu>.el-submenu__title,
+    & .el-submenu .el-menu-item {
+      min-width: $sideBarWidth !important;
+      background-color: $subMenuBg !important;
+      height: 42px;
+      line-height: 42px;
+      &:hover {
+        background-color: $subMenuHover !important;
+      }
+    }
+  }
+
+  .hideSidebar {
+    .sidebar-container {
+      width: 54px !important;
+    }
+
+    .main-container {
+      margin-left: 54px;
+    }
+
+    .submenu-title-noDropdown {
+      padding: 0 !important;
+      position: relative;
+
+      .el-tooltip {
+        padding: 0 !important;
+
+        .svg-icon {
+          margin-left: 20px;
+        }
+      }
+    }
+
+    .el-submenu {
+      overflow: hidden;
+
+      &>.el-submenu__title {
+        padding: 0 !important;
+        height: 46px;
+        line-height: 46px;
+
+        .svg-icon {
+          margin-left: 20px;
+        }
+
+        .el-submenu__icon-arrow {
+          display: none;
+        }
+      }
+    }
+
+    .el-menu--collapse {
+      .el-submenu {
+        &>.el-submenu__title {
+          &>span {
+            height: 0;
+            width: 0;
+            overflow: hidden;
+            visibility: hidden;
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
+
+  .el-menu--collapse .el-menu .el-submenu {
+    min-width: $sideBarWidth !important;
+  }
+
+  // mobile responsive
+  .mobile {
+    .main-container {
+      margin-left: 0px;
+    }
+
+    .sidebar-container {
+      transition: transform .28s;
+      width: $sideBarWidth !important;
+    }
+
+    &.hideSidebar {
+      .sidebar-container {
+        pointer-events: none;
+        transition-duration: 0.3s;
+        transform: translate3d(-$sideBarWidth, 0, 0);
+      }
+    }
+  }
+
+  .withoutAnimation {
+
+    .main-container,
+    .sidebar-container {
+      transition: none;
+    }
+  }
+  .el-scrollbar{
+    .is-opened{
+      /* border-left:3px solid $menuActiveText; */
+      .el-submenu__title{
+        background-color: $menuHover !important;
+      }
+    }
+  }
+  
+}
+
+// when menu collapsed
+.el-menu--vertical {
+  &>.el-menu {
+    .svg-icon {
+      margin-right: 16px;
+    }
+  }
+
+  .nest-menu .el-submenu>.el-submenu__title,
+  .el-menu-item {
+    &:hover {
+      background-color: $menuHover !important;
+    }
+  }
+
+  .nest-menu{
+    .el-menu-item{
+      height: 40px;
+      line-height: 40px;
+    }
+    .el-submenu__title{
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+
+  // the scroll bar appears when the subMenu is too long
+  >.el-menu--popup {
+    max-height: 100vh;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar-track-piece {
+      background: #d3dce6;
+    }
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #99a9bf;
+      border-radius: 20px;
+    }
+  }
+}
+
+.navbar {
+  height: 50px;
+  overflow: hidden;
+  position: relative;
+  background: $topbarBg;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  .hamburger-container {
+    line-height: 46px;
+    height: 100%;
+    float: left;
+    cursor: pointer;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.025);
+    }
+    .el-icon-s-fold,
+      .el-icon-s-unfold {
+        color: $topbarText;
+        font-size: 22px;
+      }
+    }
+
+  .errLog-container {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .right-menu {
+    float: right;
+    height: 100%;
+    line-height: 50px;
+    &:focus {
+      outline: none;
+    }
+    .right-tip {
+      color: $topbarText;
+      line-height: 20px;
+      vertical-align: top;
+      display: inline-block;
+      margin-right: 5px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .right-menu-item {
+      display: inline-block;
+      padding: 0 10px;
+      height: 100%;
+      font-size: 18px;
+      color: $topbarText;
+      vertical-align: text-bottom;
+
+      &.hover-effect {
+        cursor: pointer;
+        transition: background 0.3s;
+
+        &:hover {
+          background: rgba(0, 0, 0, 0.025);
+        }
+      }
+    }
+
+    .avatar-container {
+      margin-right: 30px;
+
+      .avatar-wrapper {
+        margin-top: 5px;
+        position: relative;
+
+        .user-avatar {
+          cursor: pointer;
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+        }
+
+        .el-icon-caret-bottom {
+          cursor: pointer;
+          position: absolute;
+          right: -15px;
+          top: 18px;
+          font-size: 14px;
+        }
+
+        .user-name {
+          vertical-align: top;
+          line-height: 50px;
+          margin-left: 5px;
+          font-size: 18px;
+          display: inline-block;
+          width: 55px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .user-name-len{
+          width: 90px;
+        }
+      }
+    }
+  }
+
+  .header-search{
+    .search-icon {
+      cursor: pointer;
+      font-size: 18px;
+      vertical-align: middle;
+      color: $topbarText;
+    }
+  }
+}
+
+.tags-view-container {
+  height: 38px;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0px 1px 4px rgba(0,0,0,0.05);
+  .tags-view-wrapper {
+    .tags-view-item {
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+      height: 26px;
+      line-height: 25px;
+      border: 1px solid rgb(240,240,240);
+      color: #495060;
+      background: #fff;
+      padding: 0 8px;
+      font-size: 12px;
+      margin-left: 5px;
+      margin-top: 5px;
+      &:first-of-type {
+        margin-left: 15px;
+      }
+      &:last-of-type {
+        margin-right: 15px;
+      }
+      &.active {
+        background-color: $topbarTagsBg;
+        color: #fff;
+        border-color: $topbarTagsBg;
+        &::before {
+          content: '';
+          background: #fff;
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          position: relative;
+          margin-right: 2px;
+        }
+      }
+    }
+  }
+  .contextmenu {
+    margin: 0;
+    background: #fff;
+    z-index: 3000;
+    position: absolute;
+    list-style-type: none;
+    padding: 5px 0;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    color: #333;
+    box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, .3);
+    li {
+      margin: 0;
+      padding: 7px 16px;
+      cursor: pointer;
+      &:hover {
+        background: #eee;
+      }
+    }
+  }
+}
