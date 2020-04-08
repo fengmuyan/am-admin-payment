@@ -259,3 +259,72 @@ export function removeClass(ele, cls) {
     ele.className = ele.className.replace(reg, ' ')
   }
 }
+
+/**
+ * @desc 返回四舍五入后某小数位数值
+ * @param {Number} num 处理值
+ * @param {Number} n 保留小数位数
+ * 
+ */
+export function _fomatFloat(num, n) {
+  var f = parseFloat(num);
+  if (isNaN(f)) {
+    return false;
+  }
+  f = Math.round(num * Math.pow(10, n)) / Math.pow(10, n); // n 幂   
+  var s = f.toString();
+  var rs = s.indexOf('.');
+  if (rs < 0) {
+    rs = s.length;
+    s += '.';
+  }
+  while (s.length <= rs + n) {
+    s += '0';
+  }
+  return Number(s);
+}
+
+/**
+ * @desc 解决精度问题返回四舍五入两位小数（相乘）
+ * @param {Number} arg1 符号左侧参数
+ * @param {Number} arg2 符号右侧参数
+ * @param {Number} num 保留小数位数
+ * 
+ */
+export function accMull(arg1, arg2, num = 2) {
+  var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+  try { m += s1.split(".")[1].length } catch (e) { }
+  try { m += s2.split(".")[1].length } catch (e) { }
+  return _fomatFloat(Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m), num)
+}
+
+/**
+ * @desc 解决精度问题返回四舍五入两位小数（相加）
+ * @param {Number} arg1 符号左侧参数
+ * @param {Number} arg2 符号右侧参数
+ * @param {Number} num 保留小数位数
+ * 
+ */
+export function accAdd(arg1, arg2, num = 2) {
+  var r1, r2, m;
+  try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
+  try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
+  m = Math.pow(10, Math.max(r1, r2))
+  return _fomatFloat((arg1 * m + arg2 * m) / m, num)
+}
+
+/**
+ * @desc 解决精度问题返回四舍五入两位小数（相减）
+ * @param {Number} arg1 符号左侧参数
+ * @param {Number} arg2 符号右侧参数
+ * @param {Number} num 保留小数位数
+ * 
+ */
+export function subtr(arg1, arg2, num = 2) {
+  var r1, r2, m, n;
+  try { r1 = arg1.toString().split(".")[1].length } catch (e) { r1 = 0 }
+  try { r2 = arg2.toString().split(".")[1].length } catch (e) { r2 = 0 }
+  m = Math.pow(10, Math.max(r1, r2));
+  n = (r1 >= r2) ? r1 : r2;
+  return _fomatFloat(((arg1 * m - arg2 * m) / m).toFixed(n), num);
+}

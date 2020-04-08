@@ -371,6 +371,19 @@
   .suc-color {
     color: #14cfa0;
   }
+
+  .checked-mount {
+    margin: 0;
+    line-height: 27px;
+    font-size: 14px;
+    margin-left: 10px;
+
+    span {
+      color: #82C877;
+      font-size: 17px;
+      font-weight: 600;
+    }
+  }
 }
 
 .form-p {

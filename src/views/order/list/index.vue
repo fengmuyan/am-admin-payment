@@ -150,7 +150,7 @@
         <el-table-column label="交易状态" prop="tradestate" width="120">
           <template slot-scope="scope">{{scope.row.tradestate | initTradestate}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="160">
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -158,13 +158,6 @@
               icon="el-icon-edit"
               @click="handleDetail(scope.row)"
             >详情</el-button>
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-coin"
-              v-if="Number(scope.row.tradestate) === 0 || Number(scope.row.tradestate) === 11"
-              @click="handlePey(scope.row)"
-            >前往支付</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -176,35 +169,16 @@
         @pagination="getList"
       />
     </div>
-
-    <el-dialog title="选择支付方式" :visible.sync="open" @close="clearValidate" width="470px">
-      <el-form :model="payForm" ref="payForm" :rules="payFormRules" label-width="100px">
-        <el-form-item label="支付方式：" prop="paymode" class="pay-radio">
-          <el-radio-group v-model="payForm.paymode">
-            <el-radio label="A">农行网银支付</el-radio>
-            <el-radio label="6">银联跨行支付</el-radio>
-            <el-radio label="7">农行对公账户支付</el-radio>
-          </el-radio-group>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="open = false">取 消</el-button>
-        <el-button type="primary" :loading="loadingSend" @click="submitForm('payForm')">去支付</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 <script>
-import { getOrderList, handelToPay } from "@/api/order";
+import { getOrderList, handelToPay, handelToRepay } from "@/api/order";
 import minHeightMix from "@/mixins/minHeight";
 export default {
   mixins: [minHeightMix],
   data() {
     return {
       loading: false,
-      exportLoading: false,
-      loadingSend: false,
-      open: false,
       formShow: true,
       activeName: "-1",
       orderList: [],
@@ -221,16 +195,6 @@ export default {
         ordersource: undefined,
         paystate: undefined,
         orderstate: undefined
-      },
-      payForm: {
-        orderno: undefined,
-        channelcode: "100001",
-        paymode: undefined
-      },
-      payFormRules: {
-        paymode: [
-          { required: true, message: "请选择支付方式", trigger: "change" }
-        ]
       }
     };
   },
@@ -244,7 +208,7 @@ export default {
         "已完成",
         "已关闭",
         "已失效",
-        "",
+        "待还款",
         "",
         "",
         "待称重",
@@ -314,49 +278,6 @@ export default {
     handleClick() {
       this.queryForm.pageNum = 1;
       this.getList();
-    },
-    resetPayForm() {
-      Object.assign(this.payForm, {
-        orderno: undefined,
-        channelcode: "100001",
-        paymode: undefined
-      });
-    },
-    clearValidate() {
-      this.$refs.payForm.resetFields();
-    },
-    handlePey(item) {
-      this.resetPayForm();
-      Object.assign(this.payForm, {
-        orderno: item.orderno
-      });
-      this.open = true;
-    },
-    submitForm(formName) {
-      this.$refs[formName].validate(async valid => {
-        if (valid) {
-          try {
-            this.loadingSend = true;
-            const {
-              code,
-              data: {
-                code: code2,
-                payInfo: { PaymentURL }
-              }
-            } = await handelToPay(this.payForm);
-            this.loadingSend = false;
-            if (code === 200 && code2 === "0000") {
-              this.open = false;
-              window.open(PaymentURL, "_self");
-            }
-          } catch (err) {
-            this.loadingSend = false;
-            console.log(err);
-          }
-        } else {
-          return false;
-        }
-      });
     },
     _initParams(obj) {
       const activeName = this.activeName;

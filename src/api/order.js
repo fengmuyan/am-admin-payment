@@ -27,6 +27,16 @@ export function handelToPay(data) {
   })
 }
 
+
+// 前往还款
+export function handelToRepay(data) {
+  return request({
+    url: '/tiens/order/repay',
+    method: 'post',
+    data
+  })
+}
+
 // 订单明细
 export function getDetailList(data) {
   return request({
@@ -44,7 +54,3 @@ export function handelExportDetail(data) {
     data
   })
 }
-
-
-
-
