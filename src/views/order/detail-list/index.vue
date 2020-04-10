@@ -59,13 +59,18 @@
         <el-table-column label="品种" prop="varieties" />
         <el-table-column label="级别" prop="level" />
         <el-table-column label="单价" prop="unitDiscountPrice" />
-        <el-table-column label="净重" prop="netweight" />
-        <el-table-column label="毛重" prop="grossweight" />
-        <el-table-column label="总净重" prop="totalnetweight" />
-        <el-table-column label="总毛重" prop="totalgrossweight" />
+        <el-table-column label="净重" prop="splitnetweight" />
+        <el-table-column label="毛重" prop="splitgrossweight" />
+        <el-table-column label="总净重" prop="totalnetweight">
+          <template slot-scope="scope">{{scope.row.totalnetweight}}{{scope.row.weightunit}}</template>
+        </el-table-column>
+        <el-table-column label="总毛重" prop="totalnetweight">
+          <template slot-scope="scope">{{scope.row.totalgrossweight}}{{scope.row.weightunit}}</template>
+        </el-table-column>
         <el-table-column label="数量" prop="cmdtcount" />
         <el-table-column label="商品金额" prop="cmdttotalprice" />
         <el-table-column label="优惠金额" prop="zyhprice" />
+        <el-table-column label="抹账金额" prop="wipeaccountsprice" />
         <el-table-column label="需支付" prop="xzfprice" />
         <el-table-column label="已支付" prop="payamount" />
         <el-table-column label="是否付清" prop="sfyfk" />

@@ -110,10 +110,21 @@
           </el-table-column>
           <el-table-column label="价格/件" prop="cmdtprice" />
           <el-table-column label="数量" prop="cmdtcount" />
-          <el-table-column label="优惠" prop="couponprice" />
-          <el-table-column label="抹零" prop="dispelprice" />
           <el-table-column label="折扣" prop="discount">
             <template slot-scope="scope">{{scope.row.discount | initDiscount}}</template>
+          </el-table-column>
+          <el-table-column label="优惠" prop="couponprice" />
+          <el-table-column label="抹零" prop="dispelprice" />
+          <el-table-column label="抹账" prop="wipeaccountsprice">
+            <template slot-scope="scope">
+              <el-popover placement="top-start" title="抹账" width="220" trigger="hover">
+                <div>
+                  <p style="margin:0;line-height:22px">已还：{{scope.row.payamount}}</p>
+                  <p style="margin:0;line-height:22px">备注：{{scope.row.remarks}}</p>
+                </div>
+                <span slot="reference">{{scope.row.wipeaccountsprice}}</span>
+              </el-popover>
+            </template>
           </el-table-column>
           <el-table-column label="总价" prop="cmdttotalprice" />
           <el-table-column label="状态" width="120px">
@@ -139,6 +150,10 @@
             <p>
               <b>总抹零价格：</b>
               <span>￥{{totalWeightPrice}}</span>
+            </p>
+            <p>
+              <b>总抹账金额：</b>
+              <span>￥{{totalWipePrice}}</span>
             </p>
             <p>
               <b>运费（快递）：</b>
@@ -196,50 +211,11 @@
 </template>
 
 <script>
-import { getOrderDetail, orderWeight } from "@/api/order";
+import { getOrderDetail } from "@/api/order";
+import { accAdd } from "@/utils";
 export default {
   name: "orderDetail",
   data() {
-    const patter = /((^[1-9]\d*)|^0)(\.\d{0,2}){0,1}$/;
-    const patterInt = /^\+?[1-9]\d*$/;
-    const validateWeight = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("毛重不能为空！"));
-      }
-      if (!patter.test(value)) {
-        callback(new Error("必须非负整数或至多保留两位小数！"));
-      } else if (!(value > this.weightForm.frameWeight)) {
-        callback(new Error("毛重必须大于筐重"));
-      } else {
-        callback();
-      }
-    };
-    const validateOther = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("选项不能为空！"));
-      }
-      if (!patter.test(value)) {
-        callback(new Error("必须非负整数或至多保留两位小数！"));
-      } else {
-        callback();
-      }
-    };
-    const validateAdjust = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("调整后价格不能为空！"));
-      }
-      if (value === this.weightForm.weighedCtp) {
-        callback();
-      }
-      if (!patterInt.test(value)) {
-        callback(new Error("价格调整后必须为整数！"));
-      } else {
-        if (Math.abs(value - this.weightForm.weighedCtp) > 10) {
-          callback(new Error("上下浮动不能大于10！"));
-        }
-        callback();
-      }
-    };
     return {
       openWeight: false,
       loading: false,
@@ -265,7 +241,8 @@ export default {
       failuretime: "",
       orderamount: 0,
       totalAdjustPrice: 0,
-      totalWeightPrice: 0
+      totalWeightPrice: 0,
+      totalWipePrice: 0
     };
   },
   filters: {
@@ -397,19 +374,26 @@ export default {
             return pre;
           }, 0);
 
-          this.totalAdjustPrice = cmdtOrderDetailRespList
-            .reduce((pre, item) => {
-              pre += Number(item.couponprice);
+          this.totalAdjustPrice = cmdtOrderDetailRespList.reduce(
+            (pre, item) => {
+              pre = accAdd(pre, Number(item.couponprice));
               return pre;
-            }, 0)
-            .toFixed(2);
+            },
+            0
+          );
 
-          this.totalWeightPrice = cmdtOrderDetailRespList
-            .reduce((pre, item) => {
-              pre += Number(item.dispelprice);
+          this.totalWeightPrice = cmdtOrderDetailRespList.reduce(
+            (pre, item) => {
+              pre = accAdd(pre, Number(item.dispelprice));
               return pre;
-            }, 0)
-            .toFixed(2);
+            },
+            0
+          );
+
+          this.totalWipePrice = cmdtOrderDetailRespList.reduce((pre, item) => {
+            pre = accAdd(pre, Number(item.wipeaccountsprice));
+            return pre;
+          }, 0);
 
           cmdtOrderDetailRespList.forEach(item => {
             Object.assign(item, {

@@ -32,7 +32,7 @@
     <div class="table-p" :style="{ 'min-height': minHeight }">
       <el-row :gutter="10" class="mb10 f-l">
         <el-col :span="1.5">
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="handelPayAll">批量支付</el-button>
+          <el-button type="primary" icon="el-icon-coin" size="mini" @click="handelPayAll">批量支付</el-button>
         </el-col>
         <el-col :span="1.5">
           <p class="checked-mount">
@@ -290,7 +290,7 @@ export default {
         });
         this.open = true;
       } else {
-        this.$confirm("至少选择一个订单支付?", "警告", {
+        this.$confirm("至少选择一个订单支付！", "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
